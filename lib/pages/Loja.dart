@@ -15,7 +15,7 @@ class LojaPage extends StatelessWidget {
             Expanded(
               child: Card(
                 child: SizedBox.expand(
-                  child: Image.asset('assets/testeimg.png'),
+                  child: Image.asset('assets/giftcard.jpg'),
                 ),
               ),
             ),
