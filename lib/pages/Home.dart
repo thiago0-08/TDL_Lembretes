@@ -15,7 +15,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final List<Widget> pages = [
     Center(child: Text('Página Inicial', style: TextStyle(fontSize: 24))),
-    Lista_de_TarefasPage(),
+    ListTileApp(),
     PaginaLembrete(),
     CalendarioPage(),
     LojaPage(),
