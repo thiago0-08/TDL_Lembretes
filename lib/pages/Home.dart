@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import '../main.dart';
 import 'CriaLembrete.dart';
 import 'Loja.dart';
-// import 'SeusLembrete.dart';
 import 'Calendario.dart';
 import 'ListaDeTarefas.dart';
-
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -14,59 +11,108 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
+  int currentPageIndex = 0;
+
+  final List<Widget> pages = [
+    Center(child: Text('Página Inicial', style: TextStyle(fontSize: 24))),
+    Lista_de_TarefasPage(),
+    PaginaLembrete(),
+    CalendarioPage(),
+    LojaPage(),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(child: Text("Página Inicial")),
-      bottomNavigationBar: CurvedNavigationBar(
-        key: _bottomNavigationKey,
-        backgroundColor: Colors.blueAccent,
-        color: Colors.white,
-        buttonBackgroundColor: Colors.white,
-        height: 60,
-        items: <Widget>[
-          Icon (Icons.exit_to_app, size: 30,color: const Color.fromARGB(255, 0, 0, 0),),
-          // Icon (Icons.event_note, size: 30,color: const Color.fromARGB(255, 0, 0, 0),),
-          Icon (Icons.check_circle,size: 30,color: const Color.fromARGB(255, 0, 0, 0),),
-          Icon (Icons.add, size: 30, color: const Color.fromARGB(255, 0, 0, 0)),
-          Icon (Icons.store, size: 30, color: Colors.black),
-          Icon (Icons.calendar_month, size: 30, color: Colors.black),
-        ],
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(kToolbarHeight),
+        child: AppBar(
+          centerTitle: true,
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.blueAccent, Colors.lightBlueAccent],
+              ),
+            ),
+          ),
+          leading: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: CircleAvatar(backgroundImage: AssetImage('assets/tdl.png')),
+          ),
+          title: Text(
+            "Página Inicial",
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          actions: [
+            IconButton(
+              tooltip: "Sair do app",
+              icon: Icon(Icons.exit_to_app),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder:
+                      (_) => AlertDialog(
+                        title: Text("Deseja sair?"),
+                        actions: [
+                          TextButton(
+                            child: Text("Cancelar"),
+                            onPressed: () => Navigator.pop(context),
+                          ),
+                          TextButton(
+                            child: Text("Sair"),
+                            onPressed: () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => MyApp(),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+
+      body: IndexedStack(index: currentPageIndex, children: pages),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: currentPageIndex,
         onTap: (index) {
-          if (index == 0) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => MyApp()),
-            );
-          // if (index == 0) {
-          //   Navigator.push(    
-          //     context,
-          //     MaterialPageRoute(builder: (context) => SeusLembretesPage()),
-          //   );
-          } else if (index == 3) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => LojaPage()),
-            );
-          } else if (index == 4) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => CalendarioPage()),
-            );
-           } else if (index == 2) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => PaginaLembrete()),
-            );
-           } else if (index == 1) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Lista_de_TarefasPage()),
-            );
-          }          
+          setState(() => currentPageIndex = index);
         },
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: const Color.fromARGB(255, 0, 92, 250),
+        unselectedItemColor: const Color.fromARGB(255, 10, 10, 10),
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined),
+            label: 'Início',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.check_circle_outlined),
+            label: 'Tarefas',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notifications_none),
+            label: 'Lembretes',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.calendar_today),
+            label: 'Calendário',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.storefront_outlined),
+            label: 'Loja',
+          ),
+        ],
       ),
     );
   }
