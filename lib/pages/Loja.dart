@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class LojaPage extends StatelessWidget {
   final List<Map<String, dynamic>> produtos = [
@@ -17,28 +18,39 @@ class LojaPage extends StatelessWidget {
       'preco': 'R\$ 100 Tokens',
       'imagem': 'assets/giftcard.jpg',
     },
+    {
+      'nome': 'Super Oferta',
+      'preco': 'R\$ 50 Tokens',
+      'imagem': 'assets/giftcard.jpg',
+    },
   ];
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final crossAxisCount = screenWidth < 600 ? 2 : 4;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text("Loja de Produtos"),
-        backgroundColor: Colors.blueAccent,
+        title: Text("Loja de Produtos", style: GoogleFonts.poppins()),
+        backgroundColor: const Color.fromARGB(255, 0, 92, 250),
         centerTitle: true,
       ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(12),
+      body: GridView.builder(
+        padding: const EdgeInsets.all(16),
         itemCount: produtos.length,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: crossAxisCount,
+          crossAxisSpacing: 16,
+          mainAxisSpacing: 16,
+          childAspectRatio: 0.65, // Aqui ajusta a altura dos cards
+        ),
         itemBuilder: (context, index) {
           final produto = produtos[index];
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 16.0),
-            child: ProdutoCard(
-              nome: produto['nome'],
-              preco: produto['preco'],
-              imagem: produto['imagem'],
-            ),
+          return ProdutoCard(
+            nome: produto['nome'],
+            preco: produto['preco'],
+            imagem: produto['imagem'],
           );
         },
       ),
@@ -59,46 +71,113 @@ class ProdutoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-            child: Image.asset(imagem, fit: BoxFit.cover, height: 140),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Card(
+          elevation: 4,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
           ),
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-              children: [
-                Text(
-                  nome,
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
+          child: Column(
+            children: [
+              ClipRRect(
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(16),
                 ),
-                SizedBox(height: 4),
-                Text(
-                  preco,
-                  style: TextStyle(fontSize: 14, color: Colors.green),
+                child: Image.asset(
+                  imagem,
+                  height: constraints.maxHeight * 0.4, // 40% da altura total
+                  width: double.infinity,
+                  fit: BoxFit.cover,
                 ),
-                SizedBox(height: 8),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blueAccent,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                child: Column(
+                  children: [
+                    Text(
+                      nome,
+                      style: GoogleFonts.poppins(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                  child: Text("Comprar"),
+                    const SizedBox(height: 4),
+                    Text(
+                      preco,
+                      style: GoogleFonts.poppins(
+                        fontSize: 13,
+                        color: Colors.green[700],
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 36,
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          showDialog<String>(
+                            context: context,
+                            builder:
+                                (BuildContext context) => AlertDialog(
+                                  title: Text('Confirmar Compra'),
+                                  content: Text(
+                                    'Deseja realmente comprar o produto "$nome"?',
+                                  ),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      onPressed:
+                                          () => Navigator.pop(
+                                            context,
+                                            'Cancelar',
+                                          ),
+                                      child: const Text('Cancelar'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context, 'Confirmar');
+
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          SnackBar(
+                                            content: Text('Compra confirmada!'),
+                                          ),
+                                        );
+                                      },
+                                      child: const Text('Confirmar'),
+                                    ),
+                                  ],
+                                ),
+                          );
+                        },
+                        icon: const Icon(
+                          Icons.shopping_cart_outlined,
+                          size: 16,
+                        ),
+                        label: const Text(
+                          "Comprar",
+                          style: TextStyle(fontSize: 13),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blueAccent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
