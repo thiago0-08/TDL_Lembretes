@@ -97,7 +97,10 @@ class _MyHomePageState extends State<MyHomePage> {
             label: 'Início',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.check_circle_outlined),
+            icon: Badge(
+              label: Text('3'),
+              child: const Icon(Icons.check_circle_outline),
+            ),
             label: 'Tarefas',
           ),
           BottomNavigationBarItem(

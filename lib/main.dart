@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: LoginPage(), // Agora o app começa na tela de login
+      home: LoginPage(), // faz o app começa na tela de login
       theme: ThemeData(primarySwatch: Colors.blue),
     );
   }
