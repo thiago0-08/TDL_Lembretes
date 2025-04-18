@@ -1,6 +1,6 @@
 {
-    "name": "tdl_lembretes",
-    "short_name": "tdl_lembretes",
+    "name": "grupotdl",
+    "short_name": "grupotdl",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
